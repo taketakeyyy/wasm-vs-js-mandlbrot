@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>wasm vs js with MandelbrotSet</title>
+</head>
+
+<body>
+  <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+  <h1>wasm vs js with MandelbrotSet</h1>
+  <div>
+    <p>マンデルブロ集合を生成する計算時間をwasmとJavaScript(js)で比較します（描画時間は含まず）。</p>
+    <ul>
+      <li>rustc 1.72.0 (5680fa18f 2023-08-23)</li>
+      <li>wasm-pack 0.12.1</li>
+    </ul>
+  </div>
+  <div>
+    <label for="mandelbrot_type">マンデルブロ集合: </label>
+    <select id="id-mandelbrot_type" name="mandelbrot_type">
+      <option value="mandelbrot_type1" selected>Z=Z^2+C</option>
+      <option value="mandelbrot_type2">Z=Z^3+C</option>
+      <option value="mandelbrot_type3">Z=Z^4+C</option>
+      <option value="mandelbrot_type4">Z=Z^5+C</option>
+      <option value="mandelbrot_type5">Z=Z^10+C</option>
+      <option value="mandelbrot_type6">Z=(Z*)^2+C</option>
+      <option value="mandelbrot_type7">Z=(Z*)^3+C</option>
+      <option value="mandelbrot_type8">Z=(Z*)^4+C</option>
+      <option value="mandelbrot_type9">Z=(Z*)^5+C</option>
+      <option value="mandelbrot_type10">Z=(Z*)^10+C</option>
+    </select>
+    <p>中心位置のx座標Re(c): <input type="number" step="0.01" id="id-mandelbrot_c_real" value="0"></p>
+    <p>中心位置のy座標Im(c): <input type="number" step="0.01" id="id-mandelbrot_c_image" value="0"></p>
+    <p>中心位置からの描画範囲: <input type="number" step="0.01" id="id-mandelbrot_zoom" value="2.0"></p>
+    <p>Z[n]のnの上限値: <input type="number" step="1" min="1" id="id-mandelbrot_n_limit" value="500"></p>
+    <p>上極限の発散条件: <input type="number" step="0.01" min="0" id="id-mandelbrot_lim_sup" value="2"></input>以下
+    </p>
+    <button id="id-render">Render</button>
+    <button id="id-random_render">Random Render</button>
+  </div>
+  <div class="container">
+    <!-- <canvas id="id-canvas_wasm" height="1200" width="1200"></canvas> -->
+    <div class="box">
+      <p>wasm / 生成時間:<span id="id-generate_time_rs"></span>[ms] / 合計生成時間:<span id="id-sum_generate_time_rs"></span>[ms]
+      </p>
+      <canvas id="id-canvas_hybrid" height="500" width="500"></canvas>
+    </div>
+    <div class="box">
+      <p>js / 生成時間:<span id="id-generate_time_js"></span>[ms] / 合計生成時間:<span id="id-sum_generate_time_js"></span>[ms]
+      </p>
+      <canvas id="id-canvas_js" height="500" width="500"></canvas>
+    </div>
+  </div>
+  <div>
+    <h2>所感</h2>
+    <ul>
+      <li>
+        wasm(Rust)の<code>std::collections::HashMap</code>は遅い。
+        <ul>
+          <li>
+            wasm(Rust)とjs両方とも連想配列を使って呼び出す関数（マンデルブロ集合の式を決める関数）を決めている。Rustの<code>std::collections::HashMap</code>は遅い。使うだけで感覚として+50[ms]かかる。
+          </li>
+          <li>代わりに<code>hashbrown::HashMap</code>を採用したら改善された(+5[ms]くらい？)</li>
+        </ul>
+      </li>
+      <li>wasm(Rust)が開発中にいつの間にか速くなってた。</li>
+      <ul>
+        <li>
+          初期値のZ=(Z*)^10+Cで、wasm / 生成時間:684[ms]、js / 生成時間:296[ms]
+        </li>
+        <li>
+          リファクタリング後、同条件で、wasm / 生成時間:292[ms]、js / 生成時間:295[ms]
+        </li>
+        <li>最適化はしていない（<code>cargo build --release</code>はしていない）
+        </li>
+        <li>
+          PCを再起動したから？
+        </li>
+      </ul>
+      <li>上記はすべてlocalhostで試しているときの感想。
+        <ul>
+          <li>こんな記事を見つけた：<a href="https://qiita.com/beijaflor/items/9e08d038bcddd28d7e28" target="_blank"
+              rel="noopener">localhost の
+              WebAssembly
+              は遅いので気を付けろ！ - Qiita</a></li>
+          <li>ブラウザによっても速度は変わる。</li>
+          <li>あなたから見てwasmとjsどちらが早いですか？</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <script src="./bootstrap.js"></script>
+  <link rel="stylesheet" href="./index.css" type="text/css">
+</body>
+
+</html>

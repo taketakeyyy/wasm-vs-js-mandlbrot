@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    /* 親要素をフレックスコンテナに設定 */
+}
+
+.box {
+    flex: 1;
+    /* 子要素を均等に伸縮させる */
+    padding: 10px;
+    border: 1px solid #000;
+}
