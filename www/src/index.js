@@ -1,6 +1,8 @@
 'use strict'
 
 import './index.scss';
+import './scss/input.scss';
+import './scss/footer.scss';
 import { init_func_rs, generate_mandelbrot_set_rs } from "../../pkg/mandelbrot";
 import { generateMandelbrotSet } from "./js/mandelbrot";
 import * as domops from "./js/domops";
@@ -98,14 +100,14 @@ export const click_render_button = () => {
     }
     {
         // 答えが等しいことを確認する
-        let isSame = true;
-        for (let i = 0; i < hybridResult.length; i++) {
-            if (hybridResult[i] !== jsResult[i]) {
-                console.log(i, hybridResult[i], jsResult[i]);
-                isSame = false;
-                break;
-            }
-        }
-        console.log(`\n(hybridResult === jsResult):${isSame}`);
+        // let isSame = true;
+        // for (let i = 0; i < hybridResult.length; i++) {
+        //     if (hybridResult[i] !== jsResult[i]) {
+        //         console.log(i, hybridResult[i], jsResult[i]);
+        //         isSame = false;
+        //         break;
+        //     }
+        // }
+        // console.log(`\n(hybridResult === jsResult):${isSame}`);
     }
 }

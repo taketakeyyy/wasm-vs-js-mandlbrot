@@ -1,6 +1,8 @@
 .container {
     display: flex;
-    /* 親要素をフレックスコンテナに設定 */
+    justify-content: flex-start;
+    margin-left: 0px;
+    margin-top: 5px;
 }
 
 .box {

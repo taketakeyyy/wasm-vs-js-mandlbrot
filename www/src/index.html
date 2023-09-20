@@ -3,6 +3,13 @@
 
 <head>
   <meta charset="utf-8">
+  <!-- Google Site Verification -->
+  <meta name="google-site-verification" content="ueXqmOwgEIC51cXySljVorME0GPl-_rb6-6U6PplY9I" />
+  <!--Bootstrap-->
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" -->
+  <!-- integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+  <!--Bootstrap Icon-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <title>wasm vs js with MandelbrotSet</title>
 </head>
 
@@ -16,31 +23,60 @@
       <li>wasm-pack 0.12.1</li>
     </ul>
   </div>
-  <div>
-    <label for="mandelbrot_type">マンデルブロ集合: </label>
-    <select id="id-mandelbrot_type" name="mandelbrot_type">
-      <option value="mandelbrot_type1" selected>Z=Z^2+C</option>
-      <option value="mandelbrot_type2">Z=Z^3+C</option>
-      <option value="mandelbrot_type3">Z=Z^4+C</option>
-      <option value="mandelbrot_type4">Z=Z^5+C</option>
-      <option value="mandelbrot_type5">Z=Z^10+C</option>
-      <option value="mandelbrot_type6">Z=(Z*)^2+C</option>
-      <option value="mandelbrot_type7">Z=(Z*)^3+C</option>
-      <option value="mandelbrot_type8">Z=(Z*)^4+C</option>
-      <option value="mandelbrot_type9">Z=(Z*)^5+C</option>
-      <option value="mandelbrot_type10">Z=(Z*)^10+C</option>
-    </select>
-    <p>中心位置のx座標Re(c): <input type="number" step="0.01" id="id-mandelbrot_c_real" value="0"></p>
-    <p>中心位置のy座標Im(c): <input type="number" step="0.01" id="id-mandelbrot_c_image" value="0"></p>
-    <p>中心位置からの描画範囲: <input type="number" step="0.01" id="id-mandelbrot_zoom" value="2.0"></p>
-    <p>Z[n]のnの上限値: <input type="number" step="1" min="1" id="id-mandelbrot_n_limit" value="500"></p>
-    <p>上極限の発散条件: <input type="number" step="0.01" min="0" id="id-mandelbrot_lim_sup" value="2"></input>以下
-    </p>
+  <div class="user-input-conteiner">
+    <div class="user-input-row">
+      <div class="user-input-row__label">
+        <label for="mandelbrot_type">マンデルブロ集合: </label>
+      </div>
+      <select id="id-mandelbrot_type" name="mandelbrot_type">
+        <option value="mandelbrot_type1" selected>Z=Z^2+C</option>
+        <option value="mandelbrot_type2">Z=Z^3+C</option>
+        <option value="mandelbrot_type3">Z=Z^4+C</option>
+        <option value="mandelbrot_type4">Z=Z^5+C</option>
+        <option value="mandelbrot_type9">Z=Z^10+C</option>
+        <option value="mandelbrot_type5">Z=(Z*)^2+C</option>
+        <option value="mandelbrot_type6">Z=(Z*)^3+C</option>
+        <option value="mandelbrot_type7">Z=(Z*)^4+C</option>
+        <option value="mandelbrot_type8">Z=(Z*)^5+C</option>
+        <option value="mandelbrot_type10">Z=(Z*)^10+C</option>
+      </select>
+    </div>
+    <div class="user-input-row">
+      <div class="user-input-row__label">
+        中心位置のx座標Re(c):
+      </div>
+      <input type="number" step="0.01" id="id-mandelbrot_c_real" value="0">
+    </div>
+    <div class="user-input-row">
+      <div class="user-input-row__label">
+        中心位置のy座標Im(c):
+      </div>
+      <input type="number" step="0.01" id="id-mandelbrot_c_image" value="0">
+    </div>
+    <div class="user-input-row">
+      <div class="user-input-row__label">
+        中心位置からの描画範囲:
+      </div>
+      <input type="number" step="0.01" id="id-mandelbrot_zoom" value="2.0">
+    </div>
+    <div class="user-input-row">
+      <div class="user-input-row__label">
+        Z[n]のnの上限値:
+      </div>
+      <input type="number" step="1" min="1" id="id-mandelbrot_n_limit" value="500">
+    </div>
+    <div class="user-input-row">
+      <div class="user-input-row__label">
+        上極限の発散条件:
+      </div>
+      <input type="number" step="0.01" min="0" id="id-mandelbrot_lim_sup" value="2"></input>以下
+    </div>
     <button id="id-render">Render</button>
     <button id="id-random_render">Random Render</button>
   </div>
+
+  </div>
   <div class="container">
-    <!-- <canvas id="id-canvas_wasm" height="1200" width="1200"></canvas> -->
     <div class="box">
       <p>wasm / 生成時間:<span id="id-generate_time_rs"></span>[ms] / 合計生成時間:<span id="id-sum_generate_time_rs"></span>[ms]
       </p>
@@ -64,34 +100,30 @@
           <li>代わりに<code>hashbrown::HashMap</code>を採用したら改善された(+5[ms]くらい？)</li>
         </ul>
       </li>
-      <li>wasm(Rust)が開発中にいつの間にか速くなってた。</li>
+      <li>Chromeでデベロッパーツールを開くとwasmが極端に遅くなる</li>
       <ul>
         <li>
-          初期値のZ=(Z*)^10+Cで、wasm / 生成時間:684[ms]、js / 生成時間:296[ms]
+          初期値のZ=(Z*)^10+Cで、wasm / 生成時間:292[ms]、js / 生成時間:295[ms]
         </li>
         <li>
-          リファクタリング後、同条件で、wasm / 生成時間:292[ms]、js / 生成時間:295[ms]
+          F12を押して同条件ですると、wasm / 生成時間:684[ms]、js / 生成時間:296[ms]
         </li>
-        <li>最適化はしていない（<code>cargo build --release</code>はしていない）
-        </li>
-        <li>
-          PCを再起動したから？
-        </li>
+        <li>Chrome バージョン: 117.0.5938.89（Official Build） （64 ビット）</li>
       </ul>
-      <li>上記はすべてlocalhostで試しているときの感想。
-        <ul>
-          <li>こんな記事を見つけた：<a href="https://qiita.com/beijaflor/items/9e08d038bcddd28d7e28" target="_blank"
-              rel="noopener">localhost の
-              WebAssembly
-              は遅いので気を付けろ！ - Qiita</a></li>
-          <li>ブラウザによっても速度は変わる。</li>
-          <li>あなたから見てwasmとjsどちらが早いですか？</li>
-        </ul>
-      </li>
+      <li>ブラウザによっても速度は変わる</li>
+      <li>あなたから見てwasmとjsどちらが早いですか？</li>
     </ul>
   </div>
+  <div class="footer">
+    <div class="footer__about-area">
+      <div class="footer__item"><i class="bi bi-house"></i><a href="https://taketakeyyy.github.io/">Home</a></div>
+      <div class="footer__item"><i class="bi bi-github"></i><a
+          href="https://github.com/taketakeyyy/wasm-vs-js-mandlbrot/issues/new" target="_blank"
+          rel="noopener noreferrer">不具合報告</a></div>
+    </div>
+  </div>
   <script src="./bootstrap.js"></script>
-  <link rel="stylesheet" href="./index.css" type="text/css">
+  <!-- <link rel="stylesheet" href="./index.css" type="text/css"> -->
 </body>
 
 </html>
